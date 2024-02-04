@@ -16,11 +16,14 @@ export class authService {
   constructor(private http: HttpClient, private router: Router) {}
   createUser(email: string, password: string) {
     const user: AuthData = { email: email, password: password };
-    this.http
-      .post('http://localhost:3000/api/user/signup', user)
-      .subscribe((response) => {
-        console.log(response);
-      });
+    this.http.post('http://localhost:3000/api/user/signup', user).subscribe(
+      (response) => {
+        this.loginUser(email, password);
+      },
+      (error) => {
+        this.authStatusListener.next(false);
+      }
+    );
   }
 
   getAuthStatus() {

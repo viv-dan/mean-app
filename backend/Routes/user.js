@@ -19,8 +19,8 @@ router.post("/signup", (req, res, next) => {
         });
       })
       .catch((err) => {
-        res.send(500).json({
-          err: err,
+        res.status(401).json({
+          message: "Sign Up Failed",
         });
       });
   });
