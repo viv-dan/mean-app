@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const appRouter = require("./Routes/posts");
 const path = require("path");
+const userRouter = require("./Routes/user");
 
 mongoose
   .connect(
@@ -28,5 +29,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/posts", appRouter);
+app.use("/api/user", userRouter);
 
 module.exports = app;

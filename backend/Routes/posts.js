@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Post = require("../models/post");
 const multer = require("multer");
+const checkAuth = require("../middleware/checkauth");
 
 const MIME_TYPE_MAP = {
   "image/png": "png",
@@ -27,6 +28,7 @@ const storage = multer.diskStorage({
 
 router.post(
   "",
+  checkAuth,
   multer({ storage: storage }).single("image"),
   (req, res, next) => {
     const url = req.protocol + "://" + req.get("host");
@@ -34,7 +36,9 @@ router.post(
       title: req.body.title,
       content: req.body.content,
       imagePath: url + "/images/" + req.file.filename,
+      creator: req.userData.userId,
     });
+    console.log(req.userData);
     post.save().then((result) => {
       res.status(201).json({
         message: "Post added succesfully",
@@ -51,6 +55,7 @@ router.post(
 
 router.patch(
   "/:id",
+  checkAuth,
   multer({ storage: storage }).single("image"),
   (req, res, next) => {
     let imagePath = req.body.imagePath;
@@ -59,16 +64,23 @@ router.patch(
       imagePath = url + "/images/" + req.file.filename;
     }
     Post.updateOne(
-      { _id: req.params.id },
+      { _id: req.params.id, creator: req.userData.userId },
       {
         title: req.body.title,
         content: req.body.content,
         imagePath: imagePath,
+        creator: req.userData.userId,
       }
-    ).then(() => {
-      res.status(200).json({
-        message: "Post update successful",
-      });
+    ).then((result) => {
+      if (result.modifiedCount > 0) {
+        res.status(200).json({
+          message: "Post update successful",
+        });
+      } else {
+        res.status(401).json({
+          message: "Post update UnSuccesful",
+        });
+      }
     });
   }
 );
@@ -106,13 +118,21 @@ router.get("", (req, res, next) => {
     });
 });
 
-router.delete("/:id", (req, res, next) => {
-  Post.deleteOne({ _id: req.params.id }).then((result) => {
-    console.log(result);
-    res.status(200).json({
-      message: "post deleted",
-    });
-  });
+router.delete("/:id", checkAuth, (req, res, next) => {
+  Post.deleteOne({ _id: req.params.id, creator: req.userData.userId }).then(
+    (result) => {
+      console.log(result);
+      if (result.deletedCount > 0) {
+        res.status(200).json({
+          message: "post deleted",
+        });
+      } else {
+        res.status(401).json({
+          message: "post not deleted",
+        });
+      }
+    }
+  );
 });
 
 module.exports = router;

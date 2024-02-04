@@ -17,7 +17,7 @@ export class PostCreateComponent implements OnInit {
   form: FormGroup;
   private postId: string;
   imagePreview;
-  post: Post = { title: '', content: '', id: '', imagePath: null };
+  post: Post = { title: '', content: '', id: '', imagePath: null, creator: '' };
   constructor(
     public postService: PostService,
     public route: ActivatedRoute,
@@ -44,6 +44,7 @@ export class PostCreateComponent implements OnInit {
             title: this.post.title,
             content: this.post.content,
             image: this.post.imagePath,
+            creator: this.post.creator,
           });
         });
       } else {

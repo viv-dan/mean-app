@@ -2,11 +2,33 @@
   <a mat-button routerLink="">My Posts</a>
   <span
     ><ul>
-      <li>
+      <li *ngIf="isUserAuthenticated">
         <a mat-button routerLink="/create" routerLinkActive="active"
           >Create Post</a
         >
       </li>
     </ul></span
   >
+  <div class="absolute">
+    <a
+      *ngIf="!isUserAuthenticated"
+      mat-button
+      routerLink="/signup"
+      routerLinkActive="mat-accent"
+      color="mat-accent"
+      >Sign Up</a
+    >
+
+    <a
+      *ngIf="!isUserAuthenticated"
+      mat-button
+      routerLink="/login"
+      routerLinkActive="mat-accent"
+      color="mat-accent"
+      >Login</a
+    >
+    <button mat-button *ngIf="isUserAuthenticated" (click)="onLogout()">
+      Logout
+    </button>
+  </div>
 </mat-toolbar>

@@ -14,8 +14,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './header/header.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
+import { AuthComponent } from './auth/login/auth.component';
+import { SignupComponent } from './auth/signup/signup.component';
+import { AuthInterceptor } from './auth/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -23,6 +26,8 @@ import { AppRoutingModule } from './app-routing.module';
     PostCreateComponent,
     HeaderComponent,
     PostListComponent,
+    AuthComponent,
+    SignupComponent,
   ],
   imports: [
     BrowserModule,
@@ -39,7 +44,9 @@ import { AppRoutingModule } from './app-routing.module';
     ReactiveFormsModule,
     MatPaginatorModule,
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
