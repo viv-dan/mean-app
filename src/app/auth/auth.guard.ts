@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { inject } from '@angular/core';
 import {
   CanActivateFn,
   ActivatedRouteSnapshot,
@@ -19,5 +19,5 @@ export const AuthGuard: CanActivateFn = (
   | UrlTree => {
   return inject(authService).getAuthStatus()
     ? true
-    : inject(Router).navigate(['/login']);
+    : inject(Router).navigate(['/auth/login']);
 };
